@@ -1,24 +1,21 @@
 //your code here
-double acceleration = 0.05;
 double jumboAccel = 0.25;
 double timer = 0;
 ArrayList<Particle> SpaceThings = new ArrayList<Particle>();// creates an array list of particles, which are an interface
 void setup()
 {
 	size(1000,1000);
+	for(int i = 0; i < 1000; i++){
+		double vel = Math.random()*4;
+		System.out.println(vel);
+		Particle initialStar = new NormalParticle(500,500,255,Math.random()*2*(Math.PI),vel);
+		SpaceThings.add(initialStar);
+	}
 	//Particle bigMan = new JumboParticle(500,500,255,Math.random()*2*(Math.PI),0.05);
 	//SpaceThings.add(bigMan);
 }
 void draw()
 {
-	//your code here
-	if(timer%5 == 0){
-		if(SpaceThings.size()<=100){
-			Particle timedStar = new NormalParticle(500,500,255,Math.random()*2*(Math.PI),0.05);
-			SpaceThings.add(timedStar);
-		}	
-	}
-	timer += 1;
 	background(0);
 	for(int i = 0; i < SpaceThings.size(); i++){
 		if(SpaceThings.get(i).getPosition() != 500){
@@ -51,33 +48,32 @@ class NormalParticle implements Particle //Normal particle
 		}
 		x += (Math.cos(angle)*velocity);
 		y += (Math.sin(angle)*velocity);
-		while(velocity <= 7){
-			velocity += acceleration;
+		if(velocity <= 7){
+			velocity += 0.01;
 		}
 	}
 	void show(){ // draws the star at its position
 		float x_radius, y_radius;
-	
+		float x_squared = (float)((x-500)*(x-500));
+		float y_squared = (float)((y-500)*(y-500));
+		float hypotenuse = (float)(Math.sqrt((x_squared)+(y_squared)));
+
+
 		if(x <= 500){
 			if(y <= 500){
-				x_radius = map((float)x,500,0,1,10);
-				tintCoefficient = map((float)x,500,0,0,256);
+				x_radius = map(hypotenuse,0,(float)(Math.sqrt(2)),0,10);
 			}else{
-				x_radius = map((float)x,500,0,1,10);
-				tintCoefficient = map((float)x,500,0,0,256);
+				x_radius = map((float)x,500,0,-1,10);
 			}
 		}else{
 			if(y <= 500){
-				x_radius = map((float)x,501,1000,1,10);
-				tintCoefficient = map((float)x,501,1000,0,256);
+				x_radius = map((float)x,501,1000,-1,10);
 			}else{
-				x_radius = map((float)x,501,1000,1,10);
-				tintCoefficient = map((float)x,501,1000,0,256);
+				x_radius = map((float)x,501,1000,-1,10);
 			}
 		}
 		fill(247,255,0);
 		stroke(247,255,0);
-		tint(256,(int)tintCoefficient);
 		ellipse((float)this.x,(float)this.y,x_radius,x_radius);
 	}
 	double getPosition(){
