@@ -1,16 +1,18 @@
 //your code here
-double jumboAccel = 0.25;
-double timer = 0;
 ArrayList<Particle> SpaceThings = new ArrayList<Particle>();// creates an array list of particles, which are an interface
 void setup()
 {
 	size(1000,1000);
 	for(int i = 0; i < 1000; i++){
 		double vel = Math.random()*4;
-		System.out.println(vel);
 		Particle initialStar = new NormalParticle(500,500,255,Math.random()*2*(Math.PI),vel);
 		SpaceThings.add(initialStar);
 	}
+	double Jvel = Math.random()*4;
+	Particle bigStar = new JumboParticle(500,500,255,Math.random()*2*(Math.PI),Jvel);
+	SpaceThings.add(bigStar);
+	Particle oddStar = new OddballParticle(500,500,255,Math.random()*2*(Math.PI),Jvel);
+	SpaceThings.add(oddStar);
 	//Particle bigMan = new JumboParticle(500,500,255,Math.random()*2*(Math.PI),0.05);
 	//SpaceThings.add(bigMan);
 }
@@ -27,7 +29,6 @@ void draw()
 class NormalParticle implements Particle //Normal particle
 {
 	double x, y, Color, angle, velocity;
-	float tintCoefficient;
 	
 	NormalParticle(double x, double y, double Color, double angle, double velocity){ //constuctor for normal particles
 		this.x = x;
@@ -35,7 +36,6 @@ class NormalParticle implements Particle //Normal particle
 		this.Color = Color;
 		this.angle = angle;
 		this.velocity = velocity;
-		tintCoefficient = 0;
 	}
 	void move(){ // updates the x and y components of velocity
 		if(x > 1000 || x < 0){
@@ -58,20 +58,7 @@ class NormalParticle implements Particle //Normal particle
 		float y_squared = (float)((y-500)*(y-500));
 		float hypotenuse = (float)(Math.sqrt((x_squared)+(y_squared)));
 
-
-		if(x <= 500){
-			if(y <= 500){
-				x_radius = map(hypotenuse,0,(float)(Math.sqrt(2)),0,10);
-			}else{
-				x_radius = map((float)x,500,0,-1,10);
-			}
-		}else{
-			if(y <= 500){
-				x_radius = map((float)x,501,1000,-1,10);
-			}else{
-				x_radius = map((float)x,501,1000,-1,10);
-			}
-		}
+		x_radius = map(hypotenuse,(float)0,(float)(500*Math.sqrt(2)),(float)(0.00001),(float)10);
 		fill(247,255,0);
 		stroke(247,255,0);
 		ellipse((float)this.x,(float)this.y,x_radius,x_radius);
@@ -84,31 +71,55 @@ interface Particle // collection of all particles
 {
 	public void show();
 	public void move();
-	double getPosition();
+	public double getPosition();
 	//your code here
 }
-class OddballParticle //uses an interface, is a completely separate type of particle
+class OddballParticle implements Particle //uses an interface, is a completely separate type of particle
 {
-	//your code here
-}
-/*class JumboParticle extends NormalParticle //uses inheritance, is a larger version of normal particle
-{
+	double x, y, Color, angle, velocity;
 
-	/*double x, y, Color, angle, velocity;
-
-	JumboParticle(double x, double y, double Color, double angle, double velocity){
+	OddballParticle(double x, double y, double Color, double angle, double velocity){
 		this.x = x;
 		this.y = y;
 		this.Color = Color;
 		this.angle = angle;
 		this.velocity = velocity;
 	}
-	void show(){ // draws the star at its position
-		fill(247,255,0);
-		stroke(247,255,0);
-		ellipse((float)this.x,(float)this.y,50,50);
+	void show(){
+		fill(0,0,255);
+		stroke(0,0,255);
+		ellipse((float)x, (float)y, (float)20, (float)200);
 	}
-}*/
+
+	void move(){
+		x+= (float)Math.random()*4-2;
+		y+= (float)Math.random()*4-2;
+	}
+
+	public double getPosition(){
+		return x;
+	}
+
+}
+class JumboParticle extends NormalParticle //uses inheritance, is a larger version of normal particle
+{
+	JumboParticle(double x, double y, double Color, double angle, double velocity){
+		super(x,y,Color,angle,velocity);
+	}
+
+	void show(){
+		float x_radius, y_radius;
+		float x_squared = (float)((x-500)*(x-500));
+		float y_squared = (float)((y-500)*(y-500));
+		float hypotenuse = (float)(Math.sqrt((x_squared)+(y_squared)));
+
+		x_radius = map(hypotenuse,(float)0,(float)(500*Math.sqrt(2)),(float)(1),(float)500);
+		fill(247,255,0);
+		stroke(0,255,0);
+		ellipse((float)this.x,(float)this.y,x_radius,x_radius);
+	}
+
+}
 void mousePressed(){
 
 }
